@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Bybit Memecoin Whale Tracker</title>
+<style>
+:root{--bg:#0b1220;--panel:#131f33;--panel2:#182840;--text:#edf4ff;--muted:#9db0ca;--line:#2b3d57;--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--blue:#60a5fa}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(140deg,#09111f,#101d31);color:var(--text);font:15px system-ui,Arial}
+header{padding:22px 16px;background:#101827;border-bottom:1px solid var(--line)}.wrap{max-width:1100px;margin:auto;padding:16px}
+h1{font-size:24px;margin:0 0 6px}.sub{color:var(--muted);font-size:13px}.pill{display:inline-block;border:1px solid #36506f;border-radius:30px;padding:5px 10px;color:#b8d5ff;font-size:12px;margin:8px 5px 0 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px}
+h2{font-size:17px;margin:0 0 12px}h3{font-size:14px;margin:0 0 7px}
+a{color:#8ec5ff;text-decoration:none}a:hover{text-decoration:underline}
+label{display:block;color:var(--muted);font-size:12px;margin:10px 0 5px}
+input,select{width:100%;background:#0b1627;color:var(--text);border:1px solid #354963;border-radius:8px;padding:11px;font-size:14px}
+button{border:0;border-radius:9px;padding:11px 14px;background:#2563eb;color:white;font-weight:700;cursor:pointer;margin:7px 5px 0 0}
+button.secondary{background:#34445c}button.danger{background:#9f3434}
+.metric{font-size:26px;font-weight:800}.muted{color:var(--muted);font-size:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:140px}
+.scorebar{height:10px;background:#26364e;border-radius:20px;overflow:hidden;margin:9px 0}.scorebar span{display:block;height:100%;width:0;background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e)}
+.result{font-size:20px;font-weight:800;padding:10px;border-radius:10px;background:#0b1627;margin-top:10px}
+.good{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:9px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--muted)}
+.smallbtn{font-size:12px;padding:8px}
+footer{padding:22px;color:var(--muted);font-size:12px;text-align:center}
+@media(max-width:520px){h1{font-size:21px}.wrap{padding:11px}.card{padding:13px}}
+</style></head>
+<body>
+<header><div class="wrap">
+<h1>🐋 Bybit Memecoin Whale Tracker</h1>
+<div class="sub">Manual research dashboard • No API key • No wallet connection • Android Chrome ready</div>
+<span class="pill">BYBIT SPOT RESEARCH</span><span class="pill">WHALE CHECK</span><span class="pill">RISK SCORING</span>
+</div></header>
+<main class="wrap">
+<div class="grid">
+<section class="card"><h2>1. Coin to investigate</h2>
+<label>Coin name / ticker</label><input id="coin" placeholder="e.g. PEPE">
+<label>Token contract or pair address (optional)</label><input id="contract" placeholder="Paste contract/pair address">
+<label>Bybit trading pair</label><input id="pair" placeholder="e.g. PEPE/USDT">
+<div class="row"><button onclick="openBybit()">Find on Bybit</button><button class="secondary" onclick="openDex()">Open DEX Screener</button></div>
+<p class="muted">Check that the exact coin and network match the asset you intend to research. A token existing on a DEX does not mean Bybit lists it.</p>
+</section>
+<section class="card"><h2>2. Three whale-analysis platforms</h2>
+<h3><a href="https://dexscreener.com/" target="_blank">DEX Screener ↗</a></h3><p class="muted">Check liquidity, 24h volume, buys vs sells, transaction count and price action.</p>
+<h3><a href="https://bubblemaps.io/" target="_blank">Bubblemaps ↗</a></h3><p class="muted">Inspect top-holder concentration and linked wallet clusters. Replace with the correct token/network search.</p>
+<h3><a href="https://arkhamintelligence.com/" target="_blank">Arkham Intelligence ↗</a></h3><p class="muted">Look for identifiable large wallets and significant transfers. Wallet labels are not proof of future buying or selling.</p>
+<p class="muted">Use the same token and chain in all three tools. Some features may require an account.</p>
+</section></div>
+
+<section class="card"><h2>3. Enter what you verified</h2>
+<p class="muted">Use the latest figures shown by the research sites. Score each factor from 0 (poor/unknown) to 5 (strong). Unknown data should score 0, not be guessed.</p>
+<div class="grid">
+<div><label>Liquidity quality (0–5)</label><input type="number" id="liq" min="0" max="5" value="0"></div>
+<div><label>Volume / activity (0–5)</label><input type="number" id="vol" min="0" max="5" value="0"></div>
+<div><label>Buy pressure vs sells (0–5)</label><input type="number" id="buy" min="0" max="5" value="0"></div>
+<div><label>Whale accumulation evidence (0–5)</label><input type="number" id="whale" min="0" max="5" value="0"></div>
+<div><label>Holder distribution (0–5)</label><input type="number" id="holders" min="0" max="5" value="0"></div>
+<div><label>Risk / contract safety (0–5)</label><input type="number" id="safety" min="0" max="5" value="0"></div>
+</div>
+<label>Notes / red flags</label><input id="notes" placeholder="e.g. top wallets linked; liquidity unlocked; sharp sell pressure">
+<button onclick="calculate()">Calculate research score</button><button class="secondary" onclick="saveCoin()">Save this review</button><button class="secondary" onclick="resetForm()">Clear</button>
+<div class="scorebar"><span id="bar"></span></div>
+<div class="result" id="result">Score: 0 / 30 — NOT YET ASSESSED</div>
+<p class="muted" id="advice">Complete the checks before drawing a conclusion.</p>
+</section>
+
+<section class="card"><h2>4. Saved watchlist</h2><div style="overflow-x:auto"><table><thead><tr><th>Coin</th><th>Score</th><th>Decision</th><th>Review</th></tr></thead><tbody id="watch"><tr><td colspan="4" class="muted">No saved reviews yet.</td></tr></tbody></table></div><button class="danger smallbtn" onclick="clearWatch()">Delete watchlist</button></section>
+
+<section class="card"><h2>5. How to interpret the score</h2>
+<table><tr><th>Score</th><th>Research label</th><th>Meaning</th></tr>
+<tr><td>24–30</td><td class="good">STRONG WATCH</td><td>Several checks look favourable; still verify price, spread and risk.</td></tr>
+<tr><td>18–23</td><td class="warn">WATCH</td><td>Mixed evidence. Wait for stronger confirmation.</td></tr>
+<tr><td>0–17</td><td class="bad">AVOID / INSUFFICIENT</td><td>Weak, risky or missing evidence.</td></tr></table>
+<p class="muted">This is a research checklist, not a prediction engine or financial advice. A high score is not a buy instruction. Memecoins can lose most or all of their value. Never invest money needed for essentials.</p>
+</section>
+</main>
+<footer>Bybit Memecoin Whale Tracker • Offline dashboard; external research links require internet. No API, account access, trade execution or automatic market feed.</footer>
+<script>
+const $=id=>document.getElementById(id);
+function safe(v){return Math.max(0,Math.min(5,Number(v)||0))}
+function score(){return ['liq','vol','buy','whale','holders','safety'].reduce((s,id)=>s+safe($(id).value),0)}
+function decision(s){return s>=24?'STRONG WATCH':s>=18?'WATCH':'AVOID / INSUFFICIENT'}
+function calculate(){let s=score(),d=decision(s);$('bar').style.width=(s/30*100)+'%';$('result').textContent='Score: '+s+' / 30 — '+d;$('result').style.color=s>=24?'#22c55e':s>=18?'#f59e0b':'#ef4444';$('advice').textContent=s>=24?'Favourable research signals only. Confirm Bybit listing, spread, liquidity and exit plan before considering any trade.':s>=18?'Evidence is mixed. Recheck whale movements, liquidity and buying pressure before taking risk.':'Too many weak or unverified signals. Do more research or stay away.';return {s,d}}
+function openBybit(){let p=$('pair').value||$('coin').value;if(!p){alert('Enter a coin or pair first.');return}window.open('https://www.bybit.com/en/trade/spot/'+encodeURIComponent(p.replace('/','')),'_blank')}
+function openDex(){let c=$('contract').value||$('coin').value;if(!c){window.open('https://dexscreener.com/','_blank');return}window.open('https://dexscreener.com/search?q='+encodeURIComponent(c),'_blank')}
+function saveCoin(){let c=$('coin').value.trim();if(!c){alert('Enter a coin ticker first.');return}let r=calculate(),items=JSON.parse(localStorage.getItem('bybitWhaleWatch')||'[]');items.unshift({coin:c,score:r.s,decision:r.d,notes:$('notes').value,date:new Date().toLocaleString()});localStorage.setItem('bybitWhaleWatch',JSON.stringify(items.slice(0,50)));render()}
+function render(){let items=JSON.parse(localStorage.getItem('bybitWhaleWatch')||'[]');$('watch').innerHTML=items.length?items.map((x,i)=>`<tr><td>${esc(x.coin)}</td><td>${x.score}/30</td><td>${esc(x.decision)}</td><td><button class="smallbtn secondary" onclick="showNote(${i})">View</button></td></tr>`).join(''):'<tr><td colspan="4" class="muted">No saved reviews yet.</td></tr>'}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function showNote(i){let x=JSON.parse(localStorage.getItem('bybitWhaleWatch')||'[]')[i];alert(x.coin+' • '+x.score+'/30 • '+x.decision+'\\n'+x.date+'\\n'+(x.notes||'No notes'))}
+function clearWatch(){if(confirm('Delete all saved reviews on this browser?')){localStorage.removeItem('bybitWhaleWatch');render()}}
+function resetForm(){['coin','contract','pair','notes'].forEach(x=>$(x).value='');['liq','vol','buy','whale','holders','safety'].forEach(x=>$(x).value=0);calculate()}
+render();
+</script></body></html>
